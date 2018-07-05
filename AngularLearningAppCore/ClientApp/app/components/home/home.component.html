@@ -1,0 +1,42 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Welcome {{name}}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <h2>Grid tree view sample</h2>
+    Custom Textbox :<input type="text" id="cutomSearch" [(ngModel)]="searchText" />
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Name</td>
+                <td>score</td>
+                <td>city</td>
+                <td>birthday</td>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr *ngFor="let item of fTreeObject |filter :searchText;let i=index" class="{{item.class}}">
+                <td>
+                    <span [ngStyle]="{'padding-left': getDetails(item.$$treeLevel)}">
+                        <span style="cursor:pointer" (click)="itemClick(index, item);"
+                              [ngClass]="{'glyphicon':true,'glyphicon-triangle-bottom': !item.leaf && item.expend, 'glyphicon-triangle-right': !item.leaf && !item.expend}">
+                        </span>
+                        {{i+1}}<input type="checkbox" id="chkBox{{i+1}}" indeterminate="item.indeterminate" [checked]="item.checked" (click)="itemCheckClick(index, item);" />
+                    </span>
+                </td>
+                <td>{{item.name}}</td>
+                <td>{{item.score}}</td>
+                <td>{{item.city}}</td>
+                <td>{{item.birthday}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+

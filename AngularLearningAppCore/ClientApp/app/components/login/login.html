@@ -1,0 +1,43 @@
+﻿<style>
+
+    #login-container {
+        background-color: lightblue;
+        border: outset;
+        border-color: black;
+    }
+
+        #login-container h2 {
+            text-align: center;
+        }
+
+    .field-set {
+        width: 90%;
+        margin-bottom: 2px;
+    }
+
+        .field-set label {
+            width: 30%;
+        }
+
+        .field-set input[type="text"] {
+            width: 40%;
+        }
+
+
+
+    .field-set-container {
+        width:75%;
+        display: inline-grid;
+        text-align: right;       
+    }
+</style>
+
+<body>
+    <fieldset id="login-container">
+        <h2>Login</h2>
+        <section class="field-set-container">
+            <div class="field-set"><label for="txt-username">User name:</label> <input type="text" id="txt-username" name="username" /></div>
+            <div class="field-set"><label for="txt-password">Password:</label> <input type="text" id="txt-password" name="password" /></div>
+        </section>
+    </fieldset>
+</body>
