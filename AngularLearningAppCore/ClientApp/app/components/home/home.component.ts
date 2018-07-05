@@ -77,6 +77,7 @@ export class HomeComponent {
         this.addSampleRows(1000);
 
 
+
         this.fTreeObject = this.constructTreeObject(this.treeObject);
         this.setParentDetails(this.fTreeObject);
         debugger;
