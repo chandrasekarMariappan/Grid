@@ -13,6 +13,7 @@
     <PackageReference Include="ClientDependency-TypeScript" Version="1.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.9.2" />
+    <PackageReference Include="Typescript.Compiler" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

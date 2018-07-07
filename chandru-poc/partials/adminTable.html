@@ -1,0 +1,34 @@
+<input type="text" ng-model="searchAdmin.$" placeholder="Search"/>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <td
+                ng-repeat="header in options.header"><span class="glyphicon glyphicon-sort" style="cursor:pointer"
+                                                           ng-click="sort(header.sort)"
+                                                           ng-show="header.sort!=undefined"/>{{header.name}}
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in updateOptions | filter:searchAdmin" id="row{{$index}}">
+        <td>
+            <arrow-head></arrow-head>
+        </td>
+        <td>
+            {{item.firstName}}
+        </td>
+        <td>
+            {{item.lastName}}
+        </td>
+        <td>
+            {{item.emailAddress}}
+        </td>
+        <td>
+            {{item.emailAddress}}
+        </td>
+        <td><input type="button" value="{{item.action}}" class="btn" ng-click="editItem(item)"></td>
+    </tr>
+    </tbody>
+
+
+</table>
