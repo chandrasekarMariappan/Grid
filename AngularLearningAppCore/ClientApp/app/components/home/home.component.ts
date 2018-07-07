@@ -94,17 +94,20 @@ export class HomeComponent {
     level: number = 0;
     classDetails: any = "";
 
-    constructor() {
-        debugger;
+    constructor() {       
 
         this.addSampleRows(100);
-
-        let sortedObject = this.sort(this.fTreeObjectHeader[1].sort);
-        this.fTreeObject = this.constructTreeObject(sortedObject);
+        //Sort the object based on the given column name (this.treeObject is send for sort and object itself changed )
+        this.constructFilteredObject(this.treeObject, this.fTreeObjectHeader[1].sort);
+        //Construct the tree based object 
+        this.fTreeObject = this.constructTreeObject(this.treeObject);
+        //Set the tree object into table data object
         this.fTreeObjectFull.data = this.fTreeObject;
+        //Set table header object
         this.fTreeObjectFull.header = this.fTreeObjectHeader;
+        //Set parent child hierarchy
         this.setParentDetails(this.fTreeObjectFull.data);
-        debugger;
+       
     }
 
     getDetails(level: any): string {
@@ -182,6 +185,9 @@ export class HomeComponent {
     }
 
 
+
+
+
     sort(sortObj: any): any {
 
         debugger;
@@ -192,11 +198,9 @@ export class HomeComponent {
             sortObj.order = "asc";
         this.constructFilteredObject(this.treeObject, sortObj);
         let newObj: any = [];
-        var parentDetails = [];
-        var index = 0;
         this.constructTreeObjectAfterSort(this.treeObject, newObj);
         this.setParentDetails(newObj);
-        this.fTreeObjectFull.data = newObj;
+        this.fTreeObjectFull.data = newObj;   
 
 
     }
@@ -204,13 +208,13 @@ export class HomeComponent {
 
 
 
-    filter(object: Array<any>, key: any): Array<any> {
+    //filter(object: Array<any>, key: any): Array<any> {
 
-        return object.filter(x => {
-            x.includes(key);
-        })
+    //    return object.filter(x => {
+    //        x.includes(key);
+    //    })
 
-    }
+    //}
 
 
 

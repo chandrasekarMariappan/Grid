@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "03dc67c2ce6f9b37a710"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "d258557267a2b25d74ad"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -1853,14 +1853,17 @@ var HomeComponent = (function () {
         this.newObj = [];
         this.level = 0;
         this.classDetails = "";
-        debugger;
         this.addSampleRows(100);
-        var sortedObject = this.sort(this.fTreeObjectHeader[1].sort);
-        this.fTreeObject = this.constructTreeObject(sortedObject);
+        //Sort the object based on the given column name (this.treeObject is send for sort and object itself changed )
+        this.constructFilteredObject(this.treeObject, this.fTreeObjectHeader[1].sort);
+        //Construct the tree based object 
+        this.fTreeObject = this.constructTreeObject(this.treeObject);
+        //Set the tree object into table data object
         this.fTreeObjectFull.data = this.fTreeObject;
+        //Set table header object
         this.fTreeObjectFull.header = this.fTreeObjectHeader;
+        //Set parent child hierarchy
         this.setParentDetails(this.fTreeObjectFull.data);
-        debugger;
     }
     HomeComponent.prototype.addSampleRows = function (rows) {
         for (var i = 0; i < rows; i++) {
@@ -1944,17 +1947,15 @@ var HomeComponent = (function () {
             sortObj.order = "asc";
         this.constructFilteredObject(this.treeObject, sortObj);
         var newObj = [];
-        var parentDetails = [];
-        var index = 0;
         this.constructTreeObjectAfterSort(this.treeObject, newObj);
         this.setParentDetails(newObj);
         this.fTreeObjectFull.data = newObj;
     };
-    HomeComponent.prototype.filter = function (object, key) {
-        return object.filter(function (x) {
-            x.includes(key);
-        });
-    };
+    //filter(object: Array<any>, key: any): Array<any> {
+    //    return object.filter(x => {
+    //        x.includes(key);
+    //    })
+    //}
     HomeComponent.prototype.itemCheckClick = function (id, item) {
         debugger;
         var checkCount = { count: 0 };
