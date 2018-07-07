@@ -1,0 +1,30 @@
+<!--<input type="text" ng-model="query" ng-change="search()" class="input-large search-query" placeholder="Search">-->
+<input type="text" ng-model="searchCatalog.$" placeholder="Search"/>
+<input type="button" ng-click="export()" value="Export to CSV" class="btn btn-primary"/>
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <td
+                ng-repeat="header in options.header"><span class="glyphicon glyphicon-sort" style="cursor:pointer"
+                                                           ng-click="sort(header.sort)"
+                                                           ng-show="header.sort!=undefined"/>{{header.name}}
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in updateOptions | filter:searchCatalog" class="{{item.class}}">
+        <td>
+            <span style="padding-left: {{item.level * 30}}px;"/>
+            <span style="cursor:pointer" ng-click="itemClick($index,item,item.name);"
+                  ng-class="{'glyphicon glyphicon-triangle-bottom': !item.leaf && item.expend, 'glyphicon glyphicon-triangle-right': !item.leaf && !item.expend}"/>
+            <input type="checkbox" indeterminate="item.indeterminate"
+                   id="chkBox{{$index+1}}"
+                   ng-checked="{{item.checked}}" ng-model="item.checked"
+                   ng-click="itemCheckClick($index, item);"/>
+            {{item.name}}
+
+        </td>
+        <td>{{item.partNumber}}</td>
+    </tr>
+    </tbody>
+</table>
