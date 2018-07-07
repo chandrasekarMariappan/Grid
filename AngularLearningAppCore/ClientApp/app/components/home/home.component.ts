@@ -31,15 +31,15 @@ export class HomeComponent {
     }
     treeObject: any = [
         {
-            name: 'JohnFirstname', score: 130, city: 'New York', birthday: '1980/2/5', children: [
-                { name: 'John2', score: 82, city: 'San Fran1', birthday: '1990/1/21' },
+            name: 'JohnFirstname_Root', score: 130, city: 'New York', birthday: '1980/2/5', children: [
+                { name: 'John2_root1', score: 82, city: 'San Fran1', birthday: '1990/1/21' },
                 {
-                    name: 'John3', score: 81, city: 'San Fran2', birthday: '1990/1/22', children:
+                    name: 'John3_root2', score: 81, city: 'San Fran2', birthday: '1990/1/22', children:
                     [{
-                        name: 'John4', score: 89, city: 'San Francisco', birthday: '1990/1/21', children: [
-                            { name: 'Tom1', score: 77, city: 'San Francisco', birthday: '1990/1/21' },
-                            { name: 'Tom2Kumari', score: 85, city: 'San Francisco', birthday: '1990/1/21' },
-                            { name: 'Tom3', score: 83, city: 'San Francisco', birthday: '1990/1/21' }
+                        name: 'John4_root3', score: 89, city: 'San Francisco', birthday: '1990/1/21', children: [
+                            { name: 'Tom1_child1', score: 77, city: 'San Francisco', birthday: '1990/1/21' },
+                            { name: 'Tom2Kumari_child2', score: 85, city: 'San Francisco', birthday: '1990/1/21' },
+                            { name: 'Tom3_child3', score: 83, city: 'San Francisco', birthday: '1990/1/21' }
                         ]
                     }]
                 }
@@ -47,15 +47,15 @@ export class HomeComponent {
 
         },
         {
-            name: 'John98', score: 130, city: 'New York', birthday: '1980/2/5', children: [
-                { name: 'John2', score: 82, city: 'San Fran1', birthday: '1990/1/21' },
+            name: 'John98_Root', score: 130, city: 'New York', birthday: '1980/2/5', children: [
+                { name: 'John2_Root1', score: 82, city: 'San Fran1', birthday: '1990/1/21' },
                 {
-                    name: 'John2', score: 81, city: 'San Fran2', birthday: '1990/1/22', children:
+                    name: 'John2_Root2', score: 81, city: 'San Fran2', birthday: '1990/1/22', children:
                     [{
-                        name: 'John3', score: 89, city: 'San Francisco', birthday: '1990/1/21', children: [
-                            { name: 'Tom1', score: 77, city: 'San Francisco', birthday: '1990/1/21' },
-                            { name: 'Tom2', score: 85, city: 'San Francisco', birthday: '1990/1/21' },
-                            { name: 'Tom3', score: 83, city: 'San Francisco', birthday: '1990/1/21' }
+                        name: 'John3_Root3', score: 89, city: 'San Francisco', birthday: '1990/1/21', children: [
+                            { name: 'Tom1_Child1', score: 77, city: 'San Francisco', birthday: '1990/1/21' },
+                            { name: 'Tom2_child2', score: 85, city: 'San Francisco', birthday: '1990/1/21' },
+                            { name: 'Tom3_child3', score: 83, city: 'San Francisco', birthday: '1990/1/21' }
                         ]
                     }]
                 }
@@ -65,21 +65,26 @@ export class HomeComponent {
     ];
 
     fTreeObject: any = [];
-    fTreeObjectHeader: any = [{
-        name: "Name",
-        sort: { name: "name", order: "asc" }
-    }, {
-        name: "Score",
-        sort: { name: 'score', order: "asc" }
-    },
-    {
-        name: "City",
-        sort: { name: 'score', order: "asc" }
-    },
-    {
-        name: "Birthday",
-        sort: { name: 'score', order: "asc" }
-    }
+    fTreeObjectHeader: any = [
+        {
+            name: "Id",
+            sort: { name: "Id", order: "asc" }
+        },
+        {
+            name: "Name",
+            sort: { name: "name", order: "asc" }
+        }, {
+            name: "Score",
+            sort: { name: 'score', order: "asc" }
+        },
+        {
+            name: "City",
+            sort: { name: 'score', order: "asc" }
+        },
+        {
+            name: "Birthday",
+            sort: { name: 'score', order: "asc" }
+        }
     ];
     fTreeObjectFull: any = {};
 
@@ -92,10 +97,10 @@ export class HomeComponent {
     constructor() {
         debugger;
 
-        this.addSampleRows(1000);
+        this.addSampleRows(100);
 
-
-        this.fTreeObject = this.constructTreeObject(this.treeObject);
+        let sortedObject = this.sort(this.fTreeObjectHeader[1].sort);
+        this.fTreeObject = this.constructTreeObject(sortedObject);
         this.fTreeObjectFull.data = this.fTreeObject;
         this.fTreeObjectFull.header = this.fTreeObjectHeader;
         this.setParentDetails(this.fTreeObjectFull.data);
@@ -122,9 +127,9 @@ export class HomeComponent {
 
                 a = A[key];
                 b = B[key];
-                if (a != undefined)
+                if (a != undefined && typeof a == "string")
                     a = a.toLocaleLowerCase();
-                if (b != undefined)
+                if (b != undefined && typeof a == "string")
                     b = b.toLocaleLowerCase();
                 if (typeof field.primer !== 'undefined') {
                     a = field.primer(a);
@@ -179,22 +184,21 @@ export class HomeComponent {
 
     sort(sortObj: any): any {
 
-
+        debugger;
 
         if (sortObj.order == "asc")
             sortObj.order = "desc";
         else
             sortObj.order = "asc";
-        this.constructFilteredObject(this.fTreeObjectFull.data, sortObj);
+        this.constructFilteredObject(this.treeObject, sortObj);
         let newObj: any = [];
         var parentDetails = [];
         var index = 0;
-        this.constructTreeObjectAfterSort(this.fTreeObjectFull.data, newObj);
+        this.constructTreeObjectAfterSort(this.treeObject, newObj);
         this.setParentDetails(newObj);
         this.fTreeObjectFull.data = newObj;
 
 
-        return [];
     }
 
 
@@ -282,6 +286,7 @@ export class HomeComponent {
     }
 
     itemClick(id: any, item: any) {
+        debugger;
 
         if (item.expend)
             item.expend = false;

@@ -13,16 +13,14 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <td>ID</td>
-                <td>Name</td>
-                <td>score</td>
-                <td>city</td>
-                <td>birthday</td>
+                <td *ngFor="let header of fTreeObjectFull.header">
+                    <span class="glyphicon glyphicon-sort" style="cursor:pointer"  (click)="sort(header.sort)"> {{header.name}}</span>
+                </td>
             </tr>
         </thead>
         <tbody>
 
-            <tr *ngFor="let item of fTreeObject |filter :searchText;let i=index" class="{{item.class}}">
+            <tr *ngFor="let item of fTreeObjectFull.data |filter :searchText;let i=index" class="{{item.class}}">
                 <td>
                     <span [ngStyle]="{'padding-left': getDetails(item.$$treeLevel)}">
                         <span style="cursor:pointer" (click)="itemClick(index, item);"
