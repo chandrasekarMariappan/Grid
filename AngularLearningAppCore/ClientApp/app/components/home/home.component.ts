@@ -11,15 +11,15 @@ export class HomeComponent {
 
         for (var i = 0; i < rows; i++) {
             this.treeObject.push({
-                name: 'John98'+i, score: 130+i, city: 'New York', birthday: '1980/2/5', children: [
-                    { name: 'John2'+i, score: 82+i, city: 'San Fran1', birthday: '1990/1/21' },
+                name: 'John98' + i, score: 130 + i, city: 'New York', birthday: '1980/2/5', children: [
+                    { name: 'John2' + i, score: 82 + i, city: 'San Fran1', birthday: '1990/1/21' },
                     {
-                        name: 'John2'+i, score: 81+i, city: 'San Fran2', birthday: '1990/1/22', children:
+                        name: 'John2' + i, score: 81 + i, city: 'San Fran2', birthday: '1990/1/22', children:
                         [{
-                            name: 'John3'+1, score: 89+i, city: 'San Francisco'+i, birthday: '1990/1/21', children: [
-                                { name: 'Tom1', score: 77+i, city: 'San Francisco'+i, birthday: '1990/1/21' },
-                                { name: 'Tom2', score: 85+i, city: 'San Francisco'+i, birthday: '1990/1/21' },
-                                { name: 'Tom3', score: 83+i, city: 'San Francisco'+i, birthday: '1990/1/21' }
+                            name: 'John3' + 1, score: 89 + i, city: 'San Francisco' + i, birthday: '1990/1/21', children: [
+                                { name: 'Tom1', score: 77 + i, city: 'San Francisco' + i, birthday: '1990/1/21' },
+                                { name: 'Tom2', score: 85 + i, city: 'San Francisco' + i, birthday: '1990/1/21' },
+                                { name: 'Tom3', score: 83 + i, city: 'San Francisco' + i, birthday: '1990/1/21' }
                             ]
                         }]
                     }
@@ -44,7 +44,7 @@ export class HomeComponent {
                     }]
                 }
             ]
-        
+
         },
         {
             name: 'John98', score: 130, city: 'New York', birthday: '1980/2/5', children: [
@@ -65,6 +65,24 @@ export class HomeComponent {
     ];
 
     fTreeObject: any = [];
+    fTreeObjectHeader: any = [{
+        name: "Name",
+        sort: { name: "name", order: "asc" }
+    }, {
+        name: "Score",
+        sort: { name: 'score', order: "asc" }
+    },
+    {
+        name: "City",
+        sort: { name: 'score', order: "asc" }
+    },
+    {
+        name: "Birthday",
+        sort: { name: 'score', order: "asc" }
+    }
+    ];
+    fTreeObjectFull: any = {};
+
 
 
     newObj: any = [];
@@ -78,7 +96,9 @@ export class HomeComponent {
 
 
         this.fTreeObject = this.constructTreeObject(this.treeObject);
-        this.setParentDetails(this.fTreeObject);
+        this.fTreeObjectFull.data = this.fTreeObject;
+        this.fTreeObjectFull.header = this.fTreeObjectHeader;
+        this.setParentDetails(this.fTreeObjectFull.data);
         debugger;
     }
 
@@ -87,7 +107,95 @@ export class HomeComponent {
         return (level * 30) + "px";
     }
 
+    sort_by(obj: any): any {
+        var fields = [].slice.call(arguments),
+            n_fields = fields.length;
 
+        return function (A: any, B: any): any {
+
+            var a, b, field, key, primer, reverse, result;
+            for (var i = 0, l = n_fields; i < l; i++) {
+                result = 0;
+                field = fields[i];
+
+                key = typeof field === 'string' ? field : field.name;
+
+                a = A[key];
+                b = B[key];
+                if (a != undefined)
+                    a = a.toLocaleLowerCase();
+                if (b != undefined)
+                    b = b.toLocaleLowerCase();
+                if (typeof field.primer !== 'undefined') {
+                    a = field.primer(a);
+                    b = field.primer(b);
+                }
+
+                reverse = (field.reverse == true) ? -1 : 1;
+
+                if (a < b) result = reverse * -1;
+                if (a > b) result = reverse * 1;
+                if (result !== 0) break;
+            }
+            return result;
+        }
+    }
+
+
+
+    constructTreeObjectAfterSort(data: any, newObj: any): void {
+
+        for (var i = 0; i < data.length; i++) {
+            var o = data[i];
+            newObj.push(o);
+            if (o.children && o.children.length != 0) {
+                this.constructTreeObjectAfterSort(o.children, newObj);
+            }
+        }
+
+
+    }
+
+    recursive_sort(data: any, name: string, reverse: any): any {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].children != undefined && data[i].children.length > 0) {
+                data[i].children.sort(this.sort_by({ name: name, reverse: reverse }));
+                this.recursive_sort(data[i].children, name, reverse);
+            }
+        }
+    }
+
+
+    constructFilteredObject(data: any, sortObj: any): any {
+        var reverse = false;
+        var name = sortObj.name;
+        reverse = sortObj.order == "asc" ? false : true;
+
+        var result = data.sort(this.sort_by({ name: name, reverse: reverse }));
+
+        this.recursive_sort(result, name, reverse);
+    }
+
+
+    sort(sortObj: any): any {
+
+
+
+        if (sortObj.order == "asc")
+            sortObj.order = "desc";
+        else
+            sortObj.order = "asc";
+        this.constructFilteredObject(this.fTreeObjectFull.data, sortObj);
+        let newObj: any = [];
+        var parentDetails = [];
+        var index = 0;
+        this.constructTreeObjectAfterSort(this.fTreeObjectFull.data, newObj);
+        this.setParentDetails(newObj);
+        this.fTreeObjectFull.data = newObj;
+
+
+        return [];
+    }
 
 
 
@@ -99,6 +207,10 @@ export class HomeComponent {
         })
 
     }
+
+
+
+
 
 
 
@@ -120,7 +232,7 @@ export class HomeComponent {
         var totalCount = { count: 0 };
         var checkedCount = { count: 0 };
 
-        this.checkParentChildCheckBox(item, this.fTreeObject);
+        this.checkParentChildCheckBox(item, this.fTreeObjectFull.data);
 
         //  $timeout(scope.checkHideRows, 50);
 
@@ -148,7 +260,7 @@ export class HomeComponent {
 
 
 
-   
+
 
 
 

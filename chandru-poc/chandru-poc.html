@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pocModule">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Worplace Control Center</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/jquery.dataTables.min.css">
+
+
+    <!-- Main JS framework script calls -->
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/angular.1.5.min.js"></script>
+    <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="js/treeViewTable.js"></script>
+    <script type="text/javascript" src="js/tabletoCSV.js"></script>
+    <script src="https://code.angularjs.org/1.4.0-rc.2/angular-sanitize.js"></script>
+
+    <style>
+        .green {
+            color: green;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .pull-left {
+            float: left;
+            width: 100%;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+        .border {
+            width: 65%;
+            height: 250px;
+            border: 1px solid #f9f9f9 !important;
+            margin-left: 80px;
+            background-color: #ffffff;
+        }
+
+        #work-place {
+            font-weight: bold;
+        }
+    </style>
+
+
+</head>
+<body ng-controller="pocCtrl as cc">
+<div>
+    <h1>Product Details Implementation Page</h1>
+    <div id="productDetails" treeview tmp-url='partials/treeViewDatatable.html' options="productDetails"/>
+</div>
+<div>
+    <h1>Admin Details Implementation Page</h1>
+    <div id="adminDetails" treeview tmp-url='partials/adminTable.html' options="adminDetails"/>
+</div>
+
+<div>
+    <h1>Request Details Implementation Page</h1>
+    <div id="requestDetails" treeview tmp-url="partials/requestQueue.html" options="requestDetails"/>
+</div>
+</body>
+
+<!-- App script calls -->
+<script type="text/javascript" src="js/app.js"></script>
+
+
+</html>
