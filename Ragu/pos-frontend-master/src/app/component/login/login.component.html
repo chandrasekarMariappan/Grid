@@ -1,0 +1,57 @@
+<div class="content-wrapper" id="loginPageContent">
+    <div class="wrapper container-fluid">
+      <div class="row">
+        <div class="col-sm-6 col-lg-left">
+          <div class="row mh-100 align-items-center">
+            <div class="col lg-box text-center">
+              <img src="/assets/images/logo_mmpos.png">
+              <div class="pwdCircle">
+                <span class="pwdField" [ngClass]="{ 'active': (pin && pin.length >= 1) }"></span>
+                <span class="pwdField" [ngClass]="{ 'active': (pin && pin.length >= 2) }"></span>
+                <span class="pwdField" [ngClass]="{ 'active': (pin && pin.length >= 3) }"></span>
+                <span class="pwdField" [ngClass]="{ 'active': (pin && pin.length >= 4) }"></span>
+              </div>
+              <input type="text" class="form-control form-input">
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-right">
+          <div class="row">
+            <div class="col-12 lg-right-body">
+              <div class="lgKeyBtnContainer">
+                <div class="lgKeyBtnRow">
+                  <button type="button" class="btn" (click)="onNumberClick('1')">1</button>
+                  <button type="button" class="btn" (click)="onNumberClick('2')">2</button>
+                  <button type="button" class="btn" (click)="onNumberClick('3')">3</button>
+                </div>
+                <div class="lgKeyBtnRow">
+                  <button type="button" class="btn" (click)="onNumberClick('4')">4</button>
+                  <button type="button" class="btn" (click)="onNumberClick('5')">5</button>
+                  <button type="button" class="btn" (click)="onNumberClick('6')">6</button>
+                </div>
+                <div class="lgKeyBtnRow">
+                  <button type="button" class="btn" (click)="onNumberClick('7')">7</button>
+                  <button type="button" class="btn" (click)="onNumberClick('8')">8</button>
+                  <button type="button" class="btn" (click)="onNumberClick('9')">9</button>
+                </div>
+                <div class="lgKeyBtnRow">
+                  <button type="button" class="btn" (click)="onClear()">Clear</button>
+                  <button type="button" class="btn" (click)="onNumberClick('0')">0</button>
+                  <button type="button" class="btn" (click)="onBackSpace()">Back space</button>
+                </div>
+                <div class="lgKeyBtnRow">
+                  <button type="button" class="btn" (click)="onExit()">Exit</button>
+                  <!-- <button type="button" class="btn loginBtn" onclick="showTablePage()">Log In</button> -->
+                  <button type="button" class="btn loginBtn" (click)="onLogin()">Log In</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row footer-txt">
+            <div class="col-sm-4"><a href="javascript:;">Settings</a></div>
+            <div class="col-sm-8 text-right">Copyright © 2017 Esol Soft.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,14 @@
+import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs/Rx';
+
+import { IPosRep, PosRepService } from './service/posRep.service';
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+    // do nothing
+}

@@ -26,7 +26,7 @@
                         <span style="cursor:pointer" (click)="itemClick(index, item);"
                               [ngClass]="{'glyphicon':true,'glyphicon-triangle-bottom': !item.leaf && item.expend, 'glyphicon-triangle-right': !item.leaf && !item.expend}">
                         </span>
-                        {{i+1}}<input type="checkbox" id="chkBox{{i+1}}" indeterminate="item.indeterminate" [checked]="item.checked" (click)="itemCheckClick(index, item);" />
+                        {{i+1}}<input type="checkbox" id="chkBox{{i+1}}" indeterminate="item.indeterminate" [(ngModel)]="item.selected" (click)="itemCheckClick(index, item);" />
                     </span>
                 </td>
                 <td>{{item.name}}</td>

@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "d258557267a2b25d74ad"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "305d26ec22e718949b87"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -1853,7 +1853,7 @@ var HomeComponent = (function () {
         this.newObj = [];
         this.level = 0;
         this.classDetails = "";
-        this.addSampleRows(100);
+        // this.addSampleRows(100);
         //Sort the object based on the given column name (this.treeObject is send for sort and object itself changed )
         this.constructFilteredObject(this.treeObject, this.fTreeObjectHeader[1].sort);
         //Construct the tree based object 
@@ -1959,18 +1959,20 @@ var HomeComponent = (function () {
     HomeComponent.prototype.itemCheckClick = function (id, item) {
         debugger;
         var checkCount = { count: 0 };
-        if (item.checked) {
+        item.selected = !item.selected;
+        if (item.selected) {
             item.class = item.class + " checked";
-            //checkCount.count++;
+            checkCount.count++;
         }
         else {
             item.class = item.class.replace(/checked/g, " ");
-            //checkCount.count--;
+            checkCount.count--;
         }
-        this.checkItem(item);
+        if (item.children != undefined)
+            this.checkItem(item, checkCount);
         var totalCount = { count: 0 };
         var checkedCount = { count: 0 };
-        this.checkParentChildCheckBox(item, this.fTreeObjectFull.data);
+        this.checkParentChildCheckBox(item, this.fTreeObjectFull.data, checkCount);
         //  $timeout(scope.checkHideRows, 50);
     };
     HomeComponent.prototype.checkExpand = function (item, isExpend) {
@@ -2011,6 +2013,9 @@ var HomeComponent = (function () {
         if (item.isLast == undefined)
             item.isLast = false;
         item.$$treeLevel = level;
+        if (item.selected == undefined) {
+            item.selected = false;
+        }
         if (item.children && item.children.length != 0) {
             item.leaf = false;
             item.class = classDetails;
@@ -2035,8 +2040,8 @@ var HomeComponent = (function () {
         return { selectedSlugs: slugs, selectedPsids: psIds };
     };
     HomeComponent.prototype.filterSelectedSlug = function (data) {
-        //return $filter('filter')(data, { selected: true });
-        return [];
+        return data.filter(function (x) { return x.selected == true; });
+        //return $filter('filter')(data, { selected: true }); code conversion done above
     };
     HomeComponent.prototype.setParentDetails = function (newObj) {
         for (var i = 0; i < newObj.length; i++) {
@@ -2047,10 +2052,17 @@ var HomeComponent = (function () {
             }
         }
     };
-    HomeComponent.prototype.checkParentChildCheckBox = function (item, data) {
-        var checkCount = { count: 0 };
-        //filteredItem: any = $filter('filter')(data, { slug: item.slug, name: item.name, $$hashKey: item.$$hashKey });
-        //checkItem(filteredItem[0], checkCount);
+    HomeComponent.prototype.getSelectedRowsCount = function (item, selectedRow) {
+        for (var i = 0; i < length; i++) {
+            if (item[i].selected) {
+                selectedRow.count++;
+            }
+            if (item[i].children != undefined) {
+                this.getSelectedRowsCount(item[i].children, selectedRow);
+            }
+        }
+    };
+    HomeComponent.prototype.checkParentChildCheckBox = function (item, data, checkCount) {
         var totalCount = { count: 0 };
         var checkedCount = { count: 0 };
         var flag = true;
@@ -2063,13 +2075,11 @@ var HomeComponent = (function () {
             checkedCount.count = 0;
             var filterLength = 0;
             if (data[index].children != undefined) {
-                // let filterResult: Array<any> = $filter('filter')(data[index].children, { selected: true });
-                //let filterLength = (filterResult == undefined) ? 0 : filterResult.length;
+                this.getSelectedRowsCount(data[index], checkedCount);
             }
-            checkedCount.count = checkedCount.count + filterLength;
             totalCount.count = data[index].children.length;
             this.getTotalCount(data[index], totalCount);
-            this.getChildCheckedCount(data[index], checkedCount);
+            // this.getChildCheckedCount(data[index], checkedCount);
             var chkIndex = index + 1;
             if (totalCount.count <= (checkedCount.count)) {
                 data[index].indeterminate = false;
@@ -2091,18 +2101,25 @@ var HomeComponent = (function () {
             }
         }
     };
-    HomeComponent.prototype.checkItem = function (item) {
+    HomeComponent.prototype.checkItem = function (item, checkCount) {
         debugger;
-        for (var i = 0; i < item.children; i++) {
+        if (item.children == undefined) {
+            return;
+        }
+        for (var i = 0; i < item.children.length; i++) {
             item.children[i].selected = item.selected;
-            if (item.children[i].children.length > 0)
-                this.checkItem(item.children[i]);
+            checkCount.Count++;
+            if (item.children[i].children != undefined && item.children[i].children.length > 0)
+                this.checkItem(item.children[i], checkCount);
         }
     };
     HomeComponent.prototype.getTotalCount = function (data, totalCount) {
         debugger;
         for (var j = 0; j < data.children.length; j++) {
             var item = data.children[j];
+            if (item.children == undefined) {
+                return;
+            }
             if (item.children.length) {
                 totalCount.count = totalCount.count + item.children.length;
                 this.getTotalCount(item, totalCount);
@@ -2112,6 +2129,9 @@ var HomeComponent = (function () {
     HomeComponent.prototype.getChildCheckedCount = function (data, checkedCount) {
         for (var j = 0; j < data.children.length; j++) {
             var item = data.children[j];
+            if (item.children == undefined) {
+                return;
+            }
             if (item.children.length) {
                 // checkedCount.count = checkedCount.count + $filter('filter')(item.children, { selected: true }).length;
                 this.getChildCheckedCount(item, checkedCount);
@@ -2550,7 +2570,7 @@ module.exports = "<h1>Weather forecast</h1>\r\n\r\n<p>This component demonstrate
 /* 27 */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-md-12\">\r\n            <h2>Welcome {{name}}</h2>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"row\">\r\n    <h2>Grid tree view sample</h2>\r\n    Custom Textbox :<input type=\"text\" id=\"cutomSearch\" [(ngModel)]=\"searchText\" />\r\n    <table class=\"table table-striped\">\r\n        <thead>\r\n            <tr>\r\n                <td *ngFor=\"let header of fTreeObjectFull.header\">\r\n                    <span class=\"glyphicon glyphicon-sort\" style=\"cursor:pointer\"  (click)=\"sort(header.sort)\"> {{header.name}}</span>\r\n                </td>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n\r\n            <tr *ngFor=\"let item of fTreeObjectFull.data |filter :searchText;let i=index\" class=\"{{item.class}}\">\r\n                <td>\r\n                    <span [ngStyle]=\"{'padding-left': getDetails(item.$$treeLevel)}\">\r\n                        <span style=\"cursor:pointer\" (click)=\"itemClick(index, item);\"\r\n                              [ngClass]=\"{'glyphicon':true,'glyphicon-triangle-bottom': !item.leaf && item.expend, 'glyphicon-triangle-right': !item.leaf && !item.expend}\">\r\n                        </span>\r\n                        {{i+1}}<input type=\"checkbox\" id=\"chkBox{{i+1}}\" indeterminate=\"item.indeterminate\" [checked]=\"item.checked\" (click)=\"itemCheckClick(index, item);\" />\r\n                    </span>\r\n                </td>\r\n                <td>{{item.name}}</td>\r\n                <td>{{item.score}}</td>\r\n                <td>{{item.city}}</td>\r\n                <td>{{item.birthday}}</td>\r\n            </tr>\r\n        </tbody>\r\n    </table>\r\n</div>\r\n\r\n";
+module.exports = "\r\n<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-md-12\">\r\n            <h2>Welcome {{name}}</h2>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"row\">\r\n    <h2>Grid tree view sample</h2>\r\n    Custom Textbox :<input type=\"text\" id=\"cutomSearch\" [(ngModel)]=\"searchText\" />\r\n    <table class=\"table table-striped\">\r\n        <thead>\r\n            <tr>\r\n                <td *ngFor=\"let header of fTreeObjectFull.header\">\r\n                    <span class=\"glyphicon glyphicon-sort\" style=\"cursor:pointer\"  (click)=\"sort(header.sort)\"> {{header.name}}</span>\r\n                </td>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n\r\n            <tr *ngFor=\"let item of fTreeObjectFull.data |filter :searchText;let i=index\" class=\"{{item.class}}\">\r\n                <td>\r\n                    <span [ngStyle]=\"{'padding-left': getDetails(item.$$treeLevel)}\">\r\n                        <span style=\"cursor:pointer\" (click)=\"itemClick(index, item);\"\r\n                              [ngClass]=\"{'glyphicon':true,'glyphicon-triangle-bottom': !item.leaf && item.expend, 'glyphicon-triangle-right': !item.leaf && !item.expend}\">\r\n                        </span>\r\n                        {{i+1}}<input type=\"checkbox\" id=\"chkBox{{i+1}}\" indeterminate=\"item.indeterminate\" [(ngModel)]=\"item.selected\" (click)=\"itemCheckClick(index, item);\" />\r\n                    </span>\r\n                </td>\r\n                <td>{{item.name}}</td>\r\n                <td>{{item.score}}</td>\r\n                <td>{{item.city}}</td>\r\n                <td>{{item.birthday}}</td>\r\n            </tr>\r\n        </tbody>\r\n    </table>\r\n</div>\r\n\r\n";
 
 /***/ }),
 /* 28 */

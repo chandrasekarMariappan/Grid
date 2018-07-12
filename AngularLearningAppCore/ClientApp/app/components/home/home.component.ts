@@ -94,9 +94,9 @@ export class HomeComponent {
     level: number = 0;
     classDetails: any = "";
 
-    constructor() {       
+    constructor() {
 
-        this.addSampleRows(100);
+        // this.addSampleRows(100);
         //Sort the object based on the given column name (this.treeObject is send for sort and object itself changed )
         this.constructFilteredObject(this.treeObject, this.fTreeObjectHeader[1].sort);
         //Construct the tree based object 
@@ -107,7 +107,7 @@ export class HomeComponent {
         this.fTreeObjectFull.header = this.fTreeObjectHeader;
         //Set parent child hierarchy
         this.setParentDetails(this.fTreeObjectFull.data);
-       
+
     }
 
     getDetails(level: any): string {
@@ -200,7 +200,7 @@ export class HomeComponent {
         let newObj: any = [];
         this.constructTreeObjectAfterSort(this.treeObject, newObj);
         this.setParentDetails(newObj);
-        this.fTreeObjectFull.data = newObj;   
+        this.fTreeObjectFull.data = newObj;
 
 
     }
@@ -224,23 +224,24 @@ export class HomeComponent {
 
     itemCheckClick(id: number, item: any): void {
         debugger;
-        var checkCount = { count: 0 };
-        if (item.checked) {
+        let checkCount: any = { count: 0 };
+        item.selected = !item.selected;
+        if (item.selected) {
             item.class = item.class + " checked";
-            //checkCount.count++;
+            checkCount.count++;
         }
         else {
             item.class = item.class.replace(/checked/g, " ");
-            //checkCount.count--;
+            checkCount.count--;
 
         }
 
-
-        this.checkItem(item);
+        if (item.children != undefined)
+            this.checkItem(item, checkCount);
         var totalCount = { count: 0 };
         var checkedCount = { count: 0 };
 
-        this.checkParentChildCheckBox(item, this.fTreeObjectFull.data);
+        this.checkParentChildCheckBox(item, this.fTreeObjectFull.data, checkCount);
 
         //  $timeout(scope.checkHideRows, 50);
 
@@ -277,6 +278,7 @@ export class HomeComponent {
         debugger;
         for (var i = 0; i < tree.length; i++) {
             this.classDetails = "";
+
             this.setLevelDetails(tree[i], this.newObj, this.level, this.classDetails);
         }
 
@@ -306,6 +308,10 @@ export class HomeComponent {
         if (item.isLast == undefined)
             item.isLast = false;
         item.$$treeLevel = level;
+        if (item.selected == undefined) {
+            item.selected = false;
+
+        }
         if (item.children && item.children.length != 0) {
             item.leaf = false;
             item.class = classDetails;
@@ -330,8 +336,12 @@ export class HomeComponent {
         return { selectedSlugs: slugs, selectedPsids: psIds };
     }
     filterSelectedSlug(data: Array<any>): Array<any> {
-        //return $filter('filter')(data, { selected: true });
-        return [];
+
+
+        return data.filter(x => x.selected == true);
+
+        //return $filter('filter')(data, { selected: true }); code conversion done above
+
     }
     setParentDetails(newObj: Array<any>): void {
         for (var i = 0; i < newObj.length; i++) {
@@ -342,10 +352,23 @@ export class HomeComponent {
             }
         }
     }
-    checkParentChildCheckBox(item: any, data: Array<any>): void {
-        let checkCount: any = { count: 0 };
-        //filteredItem: any = $filter('filter')(data, { slug: item.slug, name: item.name, $$hashKey: item.$$hashKey });
-        //checkItem(filteredItem[0], checkCount);
+
+    getSelectedRowsCount(item: any, selectedRow: any): any {
+        for (var i = 0; i < length; i++) {
+            if (item[i].selected) {
+                selectedRow.count++;
+            }
+            if (item[i].children != undefined) {
+                this.getSelectedRowsCount(item[i].children, selectedRow);
+            }
+        }
+    }
+
+
+    checkParentChildCheckBox(item: any, data: Array<any>, checkCount: any): void {
+
+
+
         let totalCount: any = { count: 0 };
         let checkedCount: any = { count: 0 };
         let flag: boolean = true;
@@ -358,13 +381,17 @@ export class HomeComponent {
             checkedCount.count = 0;
             let filterLength: number = 0;
             if (data[index].children != undefined) {
-                // let filterResult: Array<any> = $filter('filter')(data[index].children, { selected: true });
-                //let filterLength = (filterResult == undefined) ? 0 : filterResult.length;
+
+
+                this.getSelectedRowsCount(data[index], checkedCount);
+
+
+
             }
-            checkedCount.count = checkedCount.count + filterLength;
+
             totalCount.count = data[index].children.length;
             this.getTotalCount(data[index], totalCount);
-            this.getChildCheckedCount(data[index], checkedCount);
+           // this.getChildCheckedCount(data[index], checkedCount);
             let chkIndex: number = index + 1;
             if (totalCount.count <= (checkedCount.count)) {
                 data[index].indeterminate = false;
@@ -389,18 +416,28 @@ export class HomeComponent {
 
 
     }
-    checkItem(item: any): void {
+    checkItem(item: any, checkCount: any): void {
         debugger;
-        for (var i = 0; i < item.children; i++) {
+
+        if (item.children == undefined) {
+            return;
+        }
+
+        for (var i = 0; i < item.children.length; i++) {
             item.children[i].selected = item.selected;
-            if (item.children[i].children.length > 0)
-                this.checkItem(item.children[i]);
+            checkCount.Count++;
+
+            if (item.children[i].children != undefined && item.children[i].children.length > 0)
+                this.checkItem(item.children[i], checkCount);
         }
     }
     getTotalCount(data: any, totalCount: any): void {
         debugger;
         for (var j = 0; j < data.children.length; j++) {
             let item: any = data.children[j];
+            if (item.children == undefined) {
+                return;
+            }
             if (item.children.length) {
                 totalCount.count = totalCount.count + item.children.length;
                 this.getTotalCount(item, totalCount);
@@ -411,6 +448,11 @@ export class HomeComponent {
     getChildCheckedCount(data: any, checkedCount: any): void {
         for (var j = 0; j < data.children.length; j++) {
             var item = data.children[j];
+
+            if (item.children == undefined) {
+                return;
+            }
+
             if (item.children.length) {
                 // checkedCount.count = checkedCount.count + $filter('filter')(item.children, { selected: true }).length;
                 this.getChildCheckedCount(item, checkedCount);
